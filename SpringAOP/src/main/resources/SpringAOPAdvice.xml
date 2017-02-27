@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="customerService" class="com.ssn.spring3.aop.advice.CustomerService">
+        <property name="name" value="shiyanlou" />
+        <property name="url" value="shiyanlou.com" />
+    </bean>
+
+    <bean id="hijackAroundMethodBean" class="com.ssn.spring3.aop.advice.HijackAroundMethod" />
+
+    <bean id="customerServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="customerService" />
+        <property name="interceptorNames">
+            <list>
+                <value>customerAdvisor</value>
+            </list>
+        </property>
+    </bean>
+   <!--  
+    <bean id="customerPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+    	<property name="mappedName" value="printName" />
+    </bean>
+    
+    <bean id="customerAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    	<property name="pointcut" ref="customerPointcut" />
+    	<property name="advice" ref="hijackAroundMethodBean" />
+    </bean>
+--> 
+	<!--  
+	<bean id="customerAdvisor" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+        <property name="mappedName" value="printName" />
+        <property name="advice" ref="hijackAroundMethodBean" />
+    </bean>
+    -->
+    <!-- regex -->
+     <bean id="customerAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="patterns">
+            <list>
+                <value>.*URL.*</value>
+            </list>
+        </property>
+        <property name="advice" ref="hijackAroundMethodBean" />
+    </bean>
+    </beans>
